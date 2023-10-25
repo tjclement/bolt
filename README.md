@@ -15,4 +15,4 @@ PulseView scope code by [Jaroslav Kysela](https://github.com/perexg/picoprobe-su
 
 Software and hardware design by [Joris Witteman](https://github.com/jorisplusplus) for Curious Supplies (MIT License)
 
-PCB art by [ankhaneko.art](ankhaneko.art) for Curious Supplies
+PCB art by [ankhaneko.art](https://ankhaneko.art) for Curious Supplies
