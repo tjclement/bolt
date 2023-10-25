@@ -9,10 +9,10 @@ adduser <your username> plugdev
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", MODE="0660", GROUP="plugdev"' > /etc/udev/rules.d/49-ecsc.rules
 
 # Set target board to access by plugdev group
-echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", MODE="0660", GROUP="plugdev"' > /etc/udev/rules.d/49-ecsc.rules
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", MODE="0660", GROUP="plugdev"' >> /etc/udev/rules.d/49-ecsc.rules
 
 # Set Curious Bolt to access by plugdev group
-echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="cafe", ATTRS{idProduct}=="4002", MODE="0660", GROUP="plugdev"' > /etc/udev/rules.d/49-ecsc.rules
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="cafe", ATTRS{idProduct}=="4002", MODE="0660", GROUP="plugdev"' >> /etc/udev/rules.d/49-ecsc.rules
 
 # Now log out and log in again (or restart)
 ```
