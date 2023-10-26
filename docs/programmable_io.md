@@ -19,4 +19,11 @@ s.io.add(0, 0, delay=500)
 
 # Set output channel 3 to high level after 1500*8.3ns
 s.io.add(3, 1, delay=1500)
+
+# Write the I/O configs to the device
+s.io.upload()
+
+# s.trigger() now triggers the configured I/O sequence
+
+# You can clear I/O configs with s.io.reset()
 ```
