@@ -1,6 +1,6 @@
+import logging
 import serial
 from serial.tools.list_ports import comports
-import logging
 from typing import Union, List
 
 class ADCSettings():
@@ -21,7 +21,7 @@ class ADCSettings():
         """
         Set ADC CLK Frequency, valid between 0.5kHz and 31.25MHz
         """
-        BASE_CLK = 125000000
+        BASE_CLK = 250000000
         pio_freq = freq*4
         divider = BASE_CLK/pio_freq
         integer = int(divider)
@@ -175,7 +175,8 @@ class Scope():
             port = matches[0]
 
         self._port = port
-        self._dev = serial.Serial(port, 115200, timeout=1.0)
+        self._dev = serial.Serial(port, 115200*10, timeout=1.0)
+        self._dev.reset_input_buffer()
         self._dev.write(b":VERSION?\n")
         data = self._dev.readline().strip()
         if data is None or data == b"":
@@ -261,6 +262,7 @@ class Scope():
         """
         self._dev.reset_input_buffer() #Clear any data
         self._dev.write(b":ADC:DATA?\n")
+
         data = self._dev.readline()
         if data is None:
             return []
@@ -270,9 +272,56 @@ class Scope():
             return []
         data = data.split(",")
         data = [x for x in data if x != '']
-        print(data)
         if as_int:
             return [int(x) for x in data]
-        return [float(x)/1024-0.5 for x in data]
+        volt_per_step = 2 / 10 / 1024  # 2V pk-pk, 10x amplified from source, in 10-bit ADC
+        return [(float(x)-512)*volt_per_step for x in data]
 
+    def plot_last_trace(self, continuous=False):
+        try:
+            import matplotlib.pyplot as plt 
+        except ImportError:
+            print("Dependencies missing, please install python package matplotlib")
+            return
+        plt.ion()
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.set_xlabel("Time since trigger (us)")
+        ax.set_ylabel("Voltage difference (mV)")
+        us_per_measurement = 1e6 / self.adc.clk_freq
+        line, = ax.plot([float(x) * us_per_measurement for x in range(50000)], [0] * 50000, 'b-')
+
+        while True:
+            try:
+                res = self.get_last_trace()
+                if len(res) != 50000:
+                    print(f"Got {len(res)} entries, skipping")
+                    if continuous:
+                        continue
+                    else:
+                        break
+                trace = [x*1000 for x in res]
+                line.set_ydata(trace)
+                ax.relim()
+                ax.autoscale_view()
+                fig.canvas.draw()
+                fig.canvas.flush_events()
+                if continuous:
+                    self.trigger()
+                    continue
+                else:
+                    plt.show()
+                    break
+            except KeyboardInterrupt:
+                break
+
+    def update(self):
+        self._dev.write(b":BOOTLOADER\n")
     
+
+
+if __name__ == "__main__":
+    s = Scope()
+    s.default_setup()
+    s.trigger()
+    s.plot_last_trace(continuous=True)
