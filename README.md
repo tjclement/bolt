@@ -8,7 +8,7 @@ The Curious Bolt is a security multi-tool for getting started with hardware hack
 - and a simple differential power analysis **oscilloscope**. 📉
 
 ## How do you turn this on?
-See [Getting Started](docs/getting_started.md) for how to set up and use your Bolt.
+See [the docs](https://bolt.curious.supplies/docs) for how to set up and use your Bolt.
 
 ## Acknowledgements
 PulseView scope code by [Jaroslav Kysela](https://github.com/perexg/picoprobe-sump), extended to run in parallel with other functions by Joris Witteman (MIT License)
