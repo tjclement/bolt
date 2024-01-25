@@ -169,6 +169,7 @@ class Scope():
             matches = [p.device for p in ports if p.interface == "Curious Bolt API"]
             if len(matches) != 1:
                 matches = [p.device for p in ports if p.product == "Curious Bolt"]
+                matches.sort()
                 matches.reverse()
                 if len(matches) != 2:
                     raise IOError('Curious Bolt device not found. Please check if it\'s connected, and pass its port explicitly if it is.')
